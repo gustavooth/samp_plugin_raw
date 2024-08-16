@@ -2,11 +2,11 @@
 
 Simple template to create plugins and gamemodes for samp using c/c++.
 
-## What you need to know
+## What You Need to Know
 
- - GTA sa and samp use 32-bit architecture. The plugin also needs to be compiled for 32-bit.
- - `AMX*`: pointer to game mode.
- - `invoke`: searches for and invokes the function using the name as a parameter. The passed amx must contain the registered passed function. See the example `server/gamemodes/main.pwn`, which contains all registered native samp functions.
+ - GTA SA and SA-MP use a 32-bit architecture. The plugin also needs to be compiled for 32 bits.
+ - AMX*: pointer to the game mode.
+ - `invoke`: searches for and invokes the function using the name as a parameter. The AMX must contain the registered function passed. See the example server/gamemodes/main.pwn, which contains all the native SA-MP functions registered.
 
 ## Requirements for Linux
 
