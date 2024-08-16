@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "plugin.h": "c",
+    "*.aa": "c",
+    "plugincommon.h": "c",
+    "amx.h": "c",
+    "defines.h": "c",
+    "invoke.h": "c",
+    "sstream": "c",
+    "sampgdk.h": "c"
+  }
+}

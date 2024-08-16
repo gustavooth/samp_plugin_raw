@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/usr/include/*",
+                "src/*",
+                "inc/*"
+            ],
+            "defines": ["LINUX"],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c23",
+            "intelliSenseMode": "linux-clang-x64",
+            "compilerArgs": ["-m32"]
+        }
+    ],
+    "version": 4
+}
