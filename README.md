@@ -1,5 +1,7 @@
 # Samp plugin raw
 
+Simple template to create plugins and gamemodes for samp using c/c++.
+
 ## What you need to know
 
  - GTA sa and samp use 32-bit architecture. The plugin also needs to be compiled for 32-bit.
