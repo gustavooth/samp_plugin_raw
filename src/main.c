@@ -3,12 +3,10 @@
 #include <invoke/invoke.h>
 #include <stdio.h>
 
-typedef void (*PFN_logprintf)(const char* format, ...);
-PFN_logprintf logprintf;
-
 extern void *pAMXFunctions;
+extern PFN_logprintf logprintf;
 
-cell AMX_NATIVE_CALL wellcome(AMX* amx, cell* params){
+cell PLUGINAPI wellcome(AMX* amx, cell* params){
   i32 player_id = params[1];
 
   char name[25] = {0};
@@ -21,11 +19,11 @@ cell AMX_NATIVE_CALL wellcome(AMX* amx, cell* params){
   return true;
 }
 
-PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports(){
+PLUGINAPI unsigned int Supports(){
   return SUPPORTS_VERSION | SUPPORTS_AMX_NATIVES;
 }
 
-PLUGIN_EXPORT b8 PLUGIN_CALL Load(void **ppData){
+PLUGINAPI b8 Load(void **ppData){
   pAMXFunctions = ppData[PLUGIN_DATA_AMX_EXPORTS];
 
   logprintf = (PFN_logprintf) ppData[PLUGIN_DATA_LOGPRINTF];
@@ -34,7 +32,7 @@ PLUGIN_EXPORT b8 PLUGIN_CALL Load(void **ppData){
   return true;
 }
 
-PLUGIN_EXPORT void PLUGIN_CALL Unload(){
+PLUGINAPI void Unload(){
   logprintf(" * myplugin was unloaded.");
 }
 
@@ -43,7 +41,7 @@ AMX_NATIVE_INFO PluginNatives[] = {
   {0, 0}
 };
 
-PLUGIN_EXPORT i32 PLUGIN_CALL AmxLoad(AMX *amx){
+PLUGINAPI i32 AmxLoad(AMX *amx){
   amx_Register(amx, PluginNatives, -1);
 
   // --------- Check amx natives
@@ -53,15 +51,17 @@ PLUGIN_EXPORT i32 PLUGIN_CALL AmxLoad(AMX *amx){
   AMX_FUNCSTUBNT* libraries = (AMX_FUNCSTUBNT* )(hdr->libraries + ((u32)(amx->base)));
 
   for (AMX_FUNCSTUBNT *n = natives; n < libraries; n++) {
+    char *name = (char*)(n->nameofs + ((u32)(hdr)));
     if (n->address == 0) {
-      char *name = (char*)(n->nameofs + ((u32)(hdr)));
-      logprintf("   Error: Function not registered: '%s'", name);
+      logprintf("Error: Function not registered: '%s'", name);
+    }else{
+      logprintf("Function registered: '%s'", name);
     }
   }
 
   return AMX_ERR_NONE;
 }
 
-PLUGIN_EXPORT i32 PLUGIN_CALL AmxUnload(AMX *amx){
+PLUGINAPI i32 AmxUnload(AMX *amx){
   return AMX_ERR_NONE;
 }

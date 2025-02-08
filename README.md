@@ -1,6 +1,6 @@
 # Samp plugin raw
 
-Simple template to create plugins and gamemodes for samp using c/c++.
+Simple template to create plugins and gamemodes for samp using c.
 
 ## What You Need to Know
 
@@ -13,9 +13,16 @@ Simple template to create plugins and gamemodes for samp using c/c++.
 Install these via package manager:
 
  - `git`
- - `cmake`
- - `ninja`
+ - `make`
+ - `clang`
 
-## Build
+## Build and test
 
- - Run build.sh.
+Download and copy the server files into the `server` folder.
+Compile file `server/gamemodes/main.pwn`. This file contains all the functions for invoke. It also contains an example of use.
+Add plugin and script in server configuration file
+
+ - `make build` build library
+ - `make install` build and install library in the server.
+ - `make run` build and install library and run server.
+ - `make clean` clean output files

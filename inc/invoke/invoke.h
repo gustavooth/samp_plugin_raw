@@ -1,114 +1,118 @@
-// Functions.h
-// This file contains all the function-definitions we'll be using inside
-// of the LVP Core; defined for use with our Invoke class.
-// **Added all functions from invoke.pwn - CodeMatrix
+/*  THIS FILE WAS MODIFIED BY
+ *  github.com/gustavooth
+ *
+ *  This file contains all the function-definitions we'll be using inside
+ *  of the LVP Core; defined for use with our Invoke class.
+ *  **Added all functions from invoke.pwn - CodeMatrix
+ */ 
 
 #pragma once
 
 // STRUCT: PAWN_FUNCTION
 // In here we define the function's name and parameters.
 typedef struct PAWN_FUNCTION {
-	int ParamCnt;			// Number of parameters for the function
-	char Function[ 33 ];		// Name of the function, ex. "GetPlayerPos"
-	char Params[ 18 ];		// Parameters for the function; i f v s
+	i32 ParamCnt;			// Number of parameters for the function
+	const char* Function;		// Name of the function, ex. "GetPlayerPos"
+	const char* Params;		// Parameters for the function; i f v s
 } PAWN_FUNCTION;
 
-int invoke(AMX* pAMX, const PAWN_FUNCTION* Command, ... );
+int invoke(AMX* amx, const PAWN_FUNCTION* command, ... );
 
 // Definition of pawn-functions;
 // --------------------------------------------
 // Parameters:
-//   i = integer
-//   f = float value
-//   s = string
-//   v = variable
-//   p = string var (GetPlayerName etc.)
+//   i = i32
+//   f = f32 value
+//   s = c_string
+//   v = variable reference
+//   p = out c_string
+
 static const PAWN_FUNCTION SendClientMessage =					{ 3, "SendClientMessage",					"iis" };
-static const PAWN_FUNCTION SendClientMessageToAll =			{ 2, "SendClientMessageToAll",				"is" };
-static const PAWN_FUNCTION SendDeathMessage =					{ 3, "SendDeathMessage",					"iii" };
-static const PAWN_FUNCTION GameTextForAll =					{ 3, "GameTextForAll",						"sii" };
+static const PAWN_FUNCTION SendClientMessageToAll =			{ 2, "SendClientMessageToAll",		"is" };
+static const PAWN_FUNCTION SendDeathMessage =					  { 3, "SendDeathMessage",					"iii" };
+static const PAWN_FUNCTION GameTextForAll =				 	    { 3, "GameTextForAll",						"sii" };
 static const PAWN_FUNCTION GameTextForPlayer =					{ 4, "GameTextForPlayer",					"isii" };
-static const PAWN_FUNCTION GetTickCount =						{ 0, "GetTickCount",						"" };
-static const PAWN_FUNCTION GetMaxPlayers =						{ 0, "GetMaxPlayers",						"" };
-static const PAWN_FUNCTION SetGameModeText =					{ 1, "SetGameModeText",						"s" };
-static const PAWN_FUNCTION SetTeamCount =						{ 1, "SetTeamCount",						"i" };
-static const PAWN_FUNCTION AddPlayerClass =					{ 11, "AddPlayerClass",						"iffffiiiiii" };
-static const PAWN_FUNCTION AddPlayerClassEx =					{ 12, "AddPlayerClassEx",					"iiffffiiiiii" };
-static const PAWN_FUNCTION AddStaticVehicle =					{ 7, "AddStaticVehicle",					"iffffii" };
-static const PAWN_FUNCTION AddStaticVehicleEx =				{ 8, "AddStaticVehicleEx",					"iffffiii" };
-static const PAWN_FUNCTION AddStaticPickup =					{ 5, "AddStaticPickup",						"iifff" };
-static const PAWN_FUNCTION ShowNameTags =						{ 1, "ShowNameTags",						"i" };
+static const PAWN_FUNCTION GetTickCount =						    { 0, "GetTickCount",						  "" };
+static const PAWN_FUNCTION GetMaxPlayers =						  { 0, "GetMaxPlayers",						  "" };
+static const PAWN_FUNCTION SetGameModeText =					  { 1, "SetGameModeText",						"s" };
+static const PAWN_FUNCTION SetTeamCount =						    { 1, "SetTeamCount",						  "i" };
+static const PAWN_FUNCTION AddPlayerClass =					    { 11, "AddPlayerClass",						"iffffiiiiii" };
+static const PAWN_FUNCTION AddPlayerClassEx =					  { 12, "AddPlayerClassEx",					"iiffffiiiiii" };
+static const PAWN_FUNCTION AddStaticVehicle =					  { 7, "AddStaticVehicle",					"iffffii" };
+static const PAWN_FUNCTION AddStaticVehicleEx =				  { 8, "AddStaticVehicleEx",			  "iffffiii" };
+static const PAWN_FUNCTION AddStaticPickup =					  { 5, "AddStaticPickup",						"iifff" };
+static const PAWN_FUNCTION ShowNameTags =						    { 1, "ShowNameTags",						  "i" };
 static const PAWN_FUNCTION ShowPlayerMarkers =					{ 1, "ShowPlayerMarkers",					"i" };
-static const PAWN_FUNCTION GameModeExit =						{ 1, "GameModeExit",						"" };
-static const PAWN_FUNCTION SetWorldTime =						{ 1, "SetWorldTime",						"i" };
-static const PAWN_FUNCTION GetWeaponName =						{ 3, "GetWeaponName",						"ivi" };
+static const PAWN_FUNCTION GameModeExit =						    { 1, "GameModeExit",						  "" };
+static const PAWN_FUNCTION SetWorldTime =						    { 1, "SetWorldTime",						"i" };
+static const PAWN_FUNCTION GetWeaponName =						  { 3, "GetWeaponName",						"ivi" };
 static const PAWN_FUNCTION EnableTirePopping =					{ 1, "EnableTirePopping",					"i" };
 static const PAWN_FUNCTION AllowInteriorWeapons =				{ 1, "AllowInteriorWeapons",				"i" };
-static const PAWN_FUNCTION SetWeather =						{ 1, "SetWeather",							"i" };
-static const PAWN_FUNCTION SetGravity =						{ 1, "SetGravity",							"f" };
-static const PAWN_FUNCTION AllowAdminTeleport =				{ 1, "AllowAdminTeleport",					"i" };
-static const PAWN_FUNCTION SetDeathDropAmount =				{ 1, "SetDeathDropAmount",					"i" };
-static const PAWN_FUNCTION CreateExplosion =					{ 5, "CreateExplosion",						"fffif" };
-static const PAWN_FUNCTION SetDisabledWeapons =				{ 0, "SetDisabledWeapons",					"" };
-static const PAWN_FUNCTION EnableZoneNames =					{ 1, "EnableZoneNames",						"i" };
-static const PAWN_FUNCTION IsPlayerAdmin =						{ 1, "IsPlayerAdmin",						"i" };
-static const PAWN_FUNCTION Kick =								{ 1, "Kick",								"i" };
-static const PAWN_FUNCTION Ban =								{ 2, "BanEx",								"is" };
-static const PAWN_FUNCTION BanEx =								{ 1, "Ban",									"i" };
-static const PAWN_FUNCTION SendRconCommand =					{ 1, "SendRconCommand",						"s" };
+static const PAWN_FUNCTION SetWeather =						      { 1, "SetWeather",							"i" };
+static const PAWN_FUNCTION SetGravity =						      { 1, "SetGravity",							"f" };
+static const PAWN_FUNCTION AllowAdminTeleport =				  { 1, "AllowAdminTeleport",					"i" };
+static const PAWN_FUNCTION SetDeathDropAmount =				  { 1, "SetDeathDropAmount",					"i" };
+static const PAWN_FUNCTION CreateExplosion =					  { 5, "CreateExplosion",						"fffif" };
+static const PAWN_FUNCTION SetDisabledWeapons =				  { 0, "SetDisabledWeapons",					"" };
+static const PAWN_FUNCTION EnableZoneNames =					  { 1, "EnableZoneNames",						"i" };
+static const PAWN_FUNCTION IsPlayerAdmin =						  { 1, "IsPlayerAdmin",						"i" };
+static const PAWN_FUNCTION Kick =								        { 1, "Kick",								"i" };
+static const PAWN_FUNCTION Ban =								        { 2, "BanEx",								"is" };
+static const PAWN_FUNCTION BanEx =								      { 1, "Ban",									"i" };
+static const PAWN_FUNCTION SendRconCommand =					  { 1, "SendRconCommand",						"s" };
 
 // a_players.inc
-static const PAWN_FUNCTION SetSpawnInfo =						{ 13, "SetSpawnInfo",						"iiiffffiiiiii" };
-static const PAWN_FUNCTION SpawnPlayer =						{ 1, "SpawnPlayer",							"i" };
-static const PAWN_FUNCTION SetPlayerPos =						{ 4, "SetPlayerPos",						"ifff" };
-static const PAWN_FUNCTION GetPlayerPos =						{ 4, "GetPlayerPos",						"ivvv" };
+static const PAWN_FUNCTION SetSpawnInfo =						    { 13, "SetSpawnInfo",						"iiiffffiiiiii" };
+static const PAWN_FUNCTION SpawnPlayer =						    { 1, "SpawnPlayer",							"i" };
+static const PAWN_FUNCTION SetPlayerPos =						    { 4, "SetPlayerPos",						"ifff" };
+static const PAWN_FUNCTION GetPlayerPos =						    { 4, "GetPlayerPos",						"ivvv" };
 static const PAWN_FUNCTION SetPlayerFacingAngle =				{ 2, "SetPlayerFacingAngle",				"if" };
 static const PAWN_FUNCTION GetPlayerFacingAngle =				{ 2, "GetPlayerFacingAngle",				"iv" };
 static const PAWN_FUNCTION SetPlayerInterior =					{ 2, "SetPlayerInterior",					"ii" };
 static const PAWN_FUNCTION GetPlayerInterior =					{ 1, "GetPlayerInterior",					"i" };
-static const PAWN_FUNCTION SetPlayerHealth =					{ 2, "SetPlayerHealth",						"if" };
-static const PAWN_FUNCTION GetPlayerHealth =					{ 2, "GetPlayerHealth",						"iv" };
-static const PAWN_FUNCTION SetPlayerArmour =					{ 2, "SetPlayerArmour",						"if" };
-static const PAWN_FUNCTION GetPlayerArmour =					{ 2, "GetPlayerArmour",						"iv" };
-static const PAWN_FUNCTION SetPlayerAmmo =						{ 3, "SetPlayerAmmo",						"iii" };
-static const PAWN_FUNCTION GetPlayerAmmo =						{ 1, "GetPlayerAmmo",						"i" };
-static const PAWN_FUNCTION SetPlayerTeam =						{ 2, "SetPlayerTeam",						"ii" };
-static const PAWN_FUNCTION GetPlayerTeam =						{ 1, "GetPlayerTeam",						"i" };
-static const PAWN_FUNCTION SetPlayerScore =					{ 2, "SetPlayerScore",						"ii" };
-static const PAWN_FUNCTION GetPlayerScore =					{ 1, "GetPlayerScore",						"i" };
-static const PAWN_FUNCTION SetPlayerColor =					{ 2, "SetPlayerColor",						"ii" };
-static const PAWN_FUNCTION GetPlayerColor =					{ 1, "GetPlayerColor",						"i" };
-static const PAWN_FUNCTION SetPlayerSkin =						{ 2, "SetPlayerSkin",						"ii" };
-static const PAWN_FUNCTION GivePlayerWeapon =					{ 3, "GivePlayerWeapon",					"iii" };
-static const PAWN_FUNCTION ResetPlayerWeapons =				{ 1, "ResetPlayerWeapons",					"i" };
+static const PAWN_FUNCTION SetPlayerHealth =					  { 2, "SetPlayerHealth",						"if" };
+static const PAWN_FUNCTION GetPlayerHealth =					  { 2, "GetPlayerHealth",						"iv" };
+static const PAWN_FUNCTION SetPlayerArmour =					  { 2, "SetPlayerArmour",						"if" };
+static const PAWN_FUNCTION GetPlayerArmour =					  { 2, "GetPlayerArmour",						"iv" };
+static const PAWN_FUNCTION SetPlayerAmmo =						  { 3, "SetPlayerAmmo",						"iii" };
+static const PAWN_FUNCTION GetPlayerAmmo =						  { 1, "GetPlayerAmmo",						"i" };
+static const PAWN_FUNCTION SetPlayerTeam =						  { 2, "SetPlayerTeam",						"ii" };
+static const PAWN_FUNCTION GetPlayerTeam =						  { 1, "GetPlayerTeam",						"i" };
+static const PAWN_FUNCTION SetPlayerScore =					    { 2, "SetPlayerScore",						"ii" };
+static const PAWN_FUNCTION GetPlayerScore =					    { 1, "GetPlayerScore",						"i" };
+static const PAWN_FUNCTION SetPlayerColor =					    { 2, "SetPlayerColor",						"ii" };
+static const PAWN_FUNCTION GetPlayerColor =					    { 1, "GetPlayerColor",						"i" };
+static const PAWN_FUNCTION SetPlayerSkin =						  { 2, "SetPlayerSkin",						"ii" };
+static const PAWN_FUNCTION GivePlayerWeapon =					  { 3, "GivePlayerWeapon",					"iii" };
+static const PAWN_FUNCTION ResetPlayerWeapons =				  { 1, "ResetPlayerWeapons",					"i" };
 static const PAWN_FUNCTION GetPlayerWeaponData =				{ 6, "GetPlayerWeaponData",					"iiiviv " };
-static const PAWN_FUNCTION GivePlayerMoney =					{ 2, "GivePlayerMoney",						"ii" };
-static const PAWN_FUNCTION ResetPlayerMoney =					{ 1, "ResetPlayerMoney",					"i" };
-static const PAWN_FUNCTION SetPlayerName =						{ 2, "SetPlayerName",						"is" };
-static const PAWN_FUNCTION GetPlayerMoney =					{ 1, "GetPlayerMoney",						"i" };
-static const PAWN_FUNCTION GetPlayerState =					{ 1, "GetPlayerState",						"i" };
-static const PAWN_FUNCTION GetPlayerIp =						{ 3, "GetPlayerIp",							"ipi" };
-static const PAWN_FUNCTION GetPlayerPing =						{ 1, "GetPlayerPing",						"i" };
-static const PAWN_FUNCTION GetPlayerWeapon =					{ 1, "GetPlayerWeapon",						"i" };
-static const PAWN_FUNCTION GetPlayerKeys =						{ 7, "GetPlayerKeys",						"ivvv" };
-static const PAWN_FUNCTION GetPlayerName =						{ 3, "GetPlayerName",						"ipi" };
-static const PAWN_FUNCTION PutPlayerInVehicle =				{ 3, "PutPlayerInVehicle",					"iii" };
-static const PAWN_FUNCTION GetPlayerVehicleID =				{ 1, "GetPlayerVehicleID",					"i" };
-static const PAWN_FUNCTION RemovePlayerFromVehicle =			{ 1, "RemovePlayerFromVehicle",				"i" };
-static const PAWN_FUNCTION TogglePlayerControllable =			{ 2, "TogglePlayerControllable",			"ii" };
-static const PAWN_FUNCTION PlayerPlaySound =					{ 5, "PlayerPlaySound",						"iifff" };
+static const PAWN_FUNCTION GivePlayerMoney =					  { 2, "GivePlayerMoney",						"ii" };
+static const PAWN_FUNCTION ResetPlayerMoney =					  { 1, "ResetPlayerMoney",					"i" };
+static const PAWN_FUNCTION SetPlayerName =						  { 2, "SetPlayerName",						"is" };
+static const PAWN_FUNCTION GetPlayerMoney =					    { 1, "GetPlayerMoney",						"i" };
+static const PAWN_FUNCTION GetPlayerState =					    { 1, "GetPlayerState",						"i" };
+static const PAWN_FUNCTION GetPlayerIp =						    { 3, "GetPlayerIp",							"ipi" };
+static const PAWN_FUNCTION GetPlayerPing =						  { 1, "GetPlayerPing",						"i" };
+static const PAWN_FUNCTION GetPlayerWeapon =					  { 1, "GetPlayerWeapon",						"i" };
+static const PAWN_FUNCTION GetPlayerKeys =						  { 4, "GetPlayerKeys",						"ivvv" };
+static const PAWN_FUNCTION GetPlayerName =						  { 3, "GetPlayerName",						"ipi" };
+static const PAWN_FUNCTION PutPlayerInVehicle =				  { 3, "PutPlayerInVehicle",					"iii" };
+static const PAWN_FUNCTION GetPlayerVehicleID =				  { 1, "GetPlayerVehicleID",					"i" };
+static const PAWN_FUNCTION RemovePlayerFromVehicle =	  { 1, "RemovePlayerFromVehicle",				"i" };
+static const PAWN_FUNCTION TogglePlayerControllable =		{ 2, "TogglePlayerControllable",			"ii" };
+static const PAWN_FUNCTION PlayerPlaySound =					  { 5, "PlayerPlaySound",						"iifff" };
 static const PAWN_FUNCTION SetPlayerCheckpoint =				{ 5, "SetPlayerCheckpoint",					"iffff" };
-static const PAWN_FUNCTION DisablePlayerCheckpoint =			{ 1, "DisablePlayerCheckpoint",				"i" };
-static const PAWN_FUNCTION SetPlayerRaceCheckpoint =			{ 9, "SetPlayerRaceCheckpoint",				"iifffffff" };
-static const PAWN_FUNCTION DisablePlayerRaceCheckpoint =		{ 1, "DisablePlayerRaceCheckpoint",			"i" };
+static const PAWN_FUNCTION DisablePlayerCheckpoint =	  { 1, "DisablePlayerCheckpoint",				"i" };
+static const PAWN_FUNCTION SetPlayerRaceCheckpoint =		{ 9, "SetPlayerRaceCheckpoint",				"iifffffff" };
+static const PAWN_FUNCTION DisablePlayerRaceCheckpoint ={ 1, "DisablePlayerRaceCheckpoint",			"i" };
 static const PAWN_FUNCTION SetPlayerWorldBounds =				{ 5, "SetPlayerWorldBounds",				"iffff" };
-static const PAWN_FUNCTION SetPlayerMarkerForPlayer =			{ 3, "SetPlayerMarkerForPlayer",			"iii" };
-static const PAWN_FUNCTION ShowPlayerNameTagForPlayer =		{ 3, "ShowPlayerNameTagForPlayer",			"iii" };
-static const PAWN_FUNCTION SetPlayerMapIcon =					{ 7, "SetPlayerMapIcon",					"iifffii" };
+static const PAWN_FUNCTION SetPlayerMarkerForPlayer =		{ 3, "SetPlayerMarkerForPlayer",			"iii" };
+static const PAWN_FUNCTION ShowPlayerNameTagForPlayer =	{ 3, "ShowPlayerNameTagForPlayer",			"iii" };
+static const PAWN_FUNCTION SetPlayerMapIcon =					  { 7, "SetPlayerMapIcon",					"iifffii" };
 static const PAWN_FUNCTION RemovePlayerMapIcon =				{ 2, "RemovePlayerMapIcon",					"ii" };
-static const PAWN_FUNCTION SetPlayerCameraPos =				{ 4, "SetPlayerCameraPos",					"ifff" };
-static const PAWN_FUNCTION SetPlayerCameraLookAt =				{ 4, "SetPlayerCameraLookAt",				"ifff" };
-static const PAWN_FUNCTION SetCameraBehindPlayer =				{ 1, "SetCameraBehindPlayer",				"i" };
+static const PAWN_FUNCTION SetPlayerCameraPos =				  { 4, "SetPlayerCameraPos",					"ifff" };
+static const PAWN_FUNCTION SetPlayerCameraLookAt =			{ 4, "SetPlayerCameraLookAt",				"ifff" };
+static const PAWN_FUNCTION SetCameraBehindPlayer =			{ 1, "SetCameraBehindPlayer",				"i" };
 static const PAWN_FUNCTION AllowPlayerTeleport =				{ 2, "AllowPlayerTeleport",					"ii" };
 static const PAWN_FUNCTION IsPlayerConnected =					{ 1, "IsPlayerConnected"					"i" };
 static const PAWN_FUNCTION IsPlayerInVehicle =					{ 2, "IsPlayerInVehicle",					"ii" };

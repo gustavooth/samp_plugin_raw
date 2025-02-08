@@ -1,16 +1,17 @@
-//
-// Invoke.cpp
-// This file contains the PawnFunction command, which simply said
-// provides functionality to invoke on a specific pawn command, using
-// a ScriptCommand-like syntax. The pawn functions _have_ to be used
-// in the filterscript/gamemode using the LVP Core.
-//
-// Author: Peter Beverloo
-//         peter@dmx-network.com
-//
-// The structure of the code is ScriptCommand-like, therefore some
-// credits to spookie as well.
-//
+/*  THIS FILE WAS MODIFIED BY
+ *  github.com/gustavooth
+ *
+ *  This file contains the PawnFunction command, which simply said
+ *  provides functionality to invoke on a specific pawn command, using
+ *  a ScriptCommand-like syntax. The pawn functions _have_ to be used
+ *  in the filterscript/gamemode using the LVP Core.
+ *
+ *  Author: Peter Beverloo
+ *          peter@dmx-network.com
+ *
+ *  The structure of the code is ScriptCommand-like, therefore some
+ *  credits to spookie as well.
+ */
 
 #include <amx/plugin.h>
 #include <defines.h>
@@ -21,123 +22,120 @@
 #include <malloc.h>
 #include <string.h>
 
+extern PFN_logprintf logprintf;
+
 #define MAX_REFERENCE_VARS 6
-#pragma warning(disable:4267 4312)
 
 // A type-definition for the AMX-function type;
 typedef int (*amx_Function_t)(AMX *amx, cell* params);
 
-// PawnFunction( )
 // This function invokes the SA-MP server and directly calls the
 // requested function, specified by the PAWN_FUNCTION parameter.
-int invoke(AMX* pAMX, const PAWN_FUNCTION* Command, ...)
+int invoke(AMX* amx, const PAWN_FUNCTION* command, ...)
 {
-	va_list vArguments; int Index, i = 1, iVarCnt = 0;
-	const char *pArgs = Command->Params;
-	va_start( vArguments, Command );
+	const char* params = command->Params;
 
-	if (!pAMX) return 0;
+	va_list v_arguments;
+	va_start( v_arguments, command );
+
+	if (!amx) return 0;
+
+ 	// contains output variable ?
+	b8 out_var = false;
+	i32 out_cnt = 0;
+	cell* out_addrs [ MAX_REFERENCE_VARS ];
 
 	// Get the function-index for this specific command;
-	bool bVariable = false; // Variables?
-	amx_FindNative( pAMX, Command->Function, &Index );
-	if( Index == 2147483647 )
-		return 0;	// The command cannot be found.
+	i32 func_index;
+	i32 result = amx_FindNative( amx, command->Function, &func_index );
+	if (result != AMX_ERR_NONE || func_index == 2147483647){
+		return result;
+	}
 
 	// Proceed with locating the memory address for this function;
-	AMX_HEADER *hdr= (AMX_HEADER *) pAMX->base;
+	AMX_HEADER* hdr= (AMX_HEADER*) amx->base;
 	unsigned int dwCallAddr = (unsigned int)( ( AMX_FUNCSTUB* )
-		( (char*)(hdr) + (hdr)->natives + hdr->defsize * Index) )->address;
+		( (char*)(hdr) + (hdr)->natives + hdr->defsize * func_index) )->address;
 
 	if( dwCallAddr == 0 )
-		return 0; // Could not locate the function's address.
+		return AMX_ERR_NOTFOUND; // Could not locate the function's address.
 
 	// Initialize the Arguments array, in which we save all required
 	// values (which are also needed by the invoked-function).
-	cell *Arguments = (cell*)malloc( sizeof( cell ) * ( Command->ParamCnt + 1 ) );
-	Arguments[ 0 ] = Command->ParamCnt * sizeof( cell );
-	cell *physAddr [ MAX_REFERENCE_VARS ];
+	cell* args = (cell*)malloc(sizeof(cell) * (command->ParamCnt + 1));
+	args[0] = command->ParamCnt * sizeof(cell);
 
-	// Use a while loop to loop through the list of parameters;
-	while( *pArgs )
-	{
-		// Are we dealing with an integer parameter?
-		if( *pArgs == 'i' )
-			Arguments[ i ] = va_arg( vArguments, int );
+	for (i32 i = 0; i < command->ParamCnt; i++){
+		i32 ai = i + 1;
 
-		// In case we're currently up with a float.
-		else if( *pArgs == 'f' )
-		{
-			float fValue = (float)va_arg( vArguments, double );
-			Arguments[ i ] = amx_ftoc( fValue );
-		}
-		// Strings are slightly different, because we want their addr.
-		else if( *pArgs == 's' )
-		{
-			// First get the string off the stack
-			char* szString = va_arg( vArguments, char* ); 
-			Arguments[ i ] = 0; cell* tmp;
-			amx_Allot( pAMX, strlen( szString ) + 1, &Arguments[ i ], &tmp );
-			amx_SetString( tmp, szString, 0, 0, strlen( szString ) + 1 );
-		}
-		else if( *pArgs == 'v' )
-		{
-			cell* tmp; // Temporary location for the physical addr.
-			amx_Allot( pAMX, 1, &Arguments[ i ], &tmp );
-			va_arg( vArguments, cell* ); // Just need to pop the arg.
-			bVariable = 1; // Indicate that we've found a variable.
-			physAddr[ iVarCnt++ ] = tmp;
-		}
-		else if( *pArgs == 'p' )
-		{
-			cell* tmp; pArgs++; // Temporary location for the string's addr.
-			va_arg( vArguments, cell* ); // Pop it off the stack
-			int iSize = va_arg( vArguments, int );
-			amx_Allot( pAMX, iSize, &Arguments[ i ], &tmp );
-			i++; Arguments[ i ] = iSize;
-			bVariable = 1; physAddr[ iVarCnt++ ] = tmp;
-		}
+		if (params[i] == 'i'){
+			args[ai] = va_arg(v_arguments, i32);
+		}else if (params[i] == 'f'){
+			f32 f_var = va_arg(v_arguments, f64);
+			args[ai] = amx_ftoc(f_var);
+		}else if (params[i] == 's'){
+			char* str = va_arg(v_arguments, char*);
+			i32 size = strlen(str) + 1;
+			cell* tmp;
+			amx_Allot(amx, size, &args[ai], &tmp);
+			amx_SetString(tmp, str, false, false, size);
+		}else if (params[i] == 'v'){
+			cell* tmp;
+			amx_Allot(amx, 1, &args[ai], &tmp);
+			va_arg(v_arguments, cell*); // Just need to pop the arg.
+			out_var = true;
+			out_addrs[out_cnt++] = tmp;
+		}else if (params[i] == 'p'){
+			cell* tmp;
+			amx_Allot(amx, 1, &args[ai], &tmp);
 
-		// And to finish with, handle given variables;
-		++pArgs; ++i;
+			// Whenever a string is an output, the next parameter is the length of the array 
+			// reserved to store that string. 
+			// I don't want the str now, just the length.
+			va_arg(v_arguments, char*); // Just need to pop the arg.
+			i++;
+			
+			out_var = true;
+			out_addrs[out_cnt++] = tmp;
+		}
 	}
 
-	va_end( vArguments );
+	va_end(v_arguments);
 
 	// Next off, we need to define the prototype for the function
 	// we'll be using. Internally, so it works on Linux too.
 	amx_Function_t pFunction = (amx_Function_t)dwCallAddr;
-	int iRes = pFunction( pAMX, Arguments ); i = 1;
-	free(Arguments);
+	result = pFunction( amx, args );
+	free(args);
 
-	if( bVariable ) 
-	{
-		// Well wait, there are variables which we might need to return.
-		pArgs = Command->Params; iVarCnt = 0;
-		va_start( vArguments, Command );
+	if (out_var){
+		va_start(v_arguments, command);
+		out_cnt = 0;
 
-		while( *pArgs )
-		{
-			// Check if the current argument is a variable;
-			if( *pArgs == 'v' )
-			{
-				unsigned int* dwValue  = va_arg( vArguments, unsigned int* );
-				unsigned int* dwRetVal = (unsigned int*)physAddr[ iVarCnt++ ];
-				*dwValue = *dwRetVal;
-				//amx_Release( pAMX, Arguments[ i ] );
+		for (i32 i = 0; i < command->ParamCnt; i++){
+			i32 ai = i + 1;
+			if (params[i] == 'i'){
+				va_arg(v_arguments, i32);
+			}else if (params[i] == 'f'){
+				va_arg(v_arguments, f64);
+			}else if (params[i] == 's'){
+				va_arg(v_arguments, char*);
+			} else if (params[i] == 'v'){
+				cell* ref = va_arg(v_arguments, cell*);
+				cell* tmp = out_addrs[out_cnt++];
+				*ref = *tmp;
+				amx_Release(amx, args[ai]);
+			} else if (params[i] == 'p'){
+				char* str = va_arg(v_arguments, char*);
+				i++;
+				i32 size = va_arg(v_arguments, i32);
+				amx_GetString(str, out_addrs[out_cnt++], false, size);
+				amx_Release(amx, args[ai]);
 			}
-			else if( *pArgs == 'p' )
-			{
-				char* dwText = va_arg( vArguments, char* );
-				pArgs++; int iSize = va_arg( vArguments, int );
-				amx_GetString( dwText, physAddr[ iVarCnt++ ], 0, iSize );
-			}
-
-			else va_arg( vArguments, void* ); // Skip it
-			++pArgs; ++i;
 		}
+		va_end(v_arguments);
 	}
 
 	// Now just return the value.
-	return iRes;
+	return result;
 }
